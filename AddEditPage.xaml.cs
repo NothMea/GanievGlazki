@@ -24,9 +24,15 @@ namespace Ганиев_Глазки
         private Agent _currentAgent = new Agent();
 
 
-        public AddEditPage()
+        public AddEditPage(Agent SelectedAgent)
         {
             InitializeComponent();
+
+            if (SelectedAgent != null)
+            {
+                _currentAgent = SelectedAgent;
+            }
+            
             DataContext = _currentAgent;
         }
 
@@ -66,6 +72,23 @@ namespace Ганиев_Глазки
                 string ph = _currentAgent.Phone.Replace("(", "").Replace("-", "").Replace("+", "");
                 if (((ph[1] == '9' || ph[1] == '4' || ph[1] == '8') && ph.Length != 11) || (ph[1] == '3' && ph.Length != 12))
                     errors.AppendLine("Укажите правильно телефон агента");
+            }
+            if (errors.Length > 0)
+            {
+                MessageBox.Show(errors.ToString());
+                return;
+            }
+            if (_currentAgent.ID == 0)
+                ГаниевГлазкиSaveEntities.GetContext().Agent.Add(_currentAgent);
+            try
+            {
+                ГаниевГлазкиSaveEntities.GetContext().SaveChanges();
+                MessageBox.Show("Информация сохранена");
+                Manager.MainFrame.GoBack();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
             }
         }
 
