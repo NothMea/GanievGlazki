@@ -47,13 +47,14 @@
 
         <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
             <TextBlock Text="Тип агента" FontSize="15" Height="20" Width="100" Margin="5"></TextBlock>
-            <ComboBox FontSize="15" Height="25" Width="100" Name="ComboType" Text="{Binding AgentTypeID}">
-                <TextBlock Text="МФО"/>
-                <TextBlock Text="ООО"/>
-                <TextBlock Text="ЗАО"/>
-                <TextBlock Text="МКК"/>
-                <TextBlock Text="ОАО"/>
-                <TextBlock Text="ПАО"/>
+            <ComboBox FontSize="15" Height="35" Width="100" Name="ComboType" Text="{Binding AgentTypeID}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <Label Content="{Binding Title}"></Label>
+                    </DataTemplate>
+             
+                </ComboBox.ItemTemplate>
+
             </ComboBox>
         </StackPanel>
         <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">

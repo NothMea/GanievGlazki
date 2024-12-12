@@ -19,12 +19,10 @@ namespace Ганиев_Глазки
 
         public static ГаниевГлазкиSaveEntities GetContext()
         {
-            if (_context == null)
-                _context = new ГаниевГлазкиSaveEntities();
+            if(_context == null )
+                _context = new ГаниевГлазкиSaveEntities();  
             return _context;
         }
-
-
         public ГаниевГлазкиSaveEntities()
             : base("name=ГаниевГлазкиSaveEntities")
         {

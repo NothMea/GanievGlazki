@@ -34,6 +34,9 @@ namespace Ганиев_Глазки
             }
             
             DataContext = _currentAgent;
+
+            var _currentType = ГаниевГлазкиSaveEntities.GetContext().AgentType.ToList();
+            ComboType.ItemsSource = _currentType;
         }
 
         private void ChangePictureBtn_Click(object sender, RoutedEventArgs e)
@@ -45,7 +48,7 @@ namespace Ганиев_Глазки
                 LogoImage.Source = new BitmapImage(new Uri(myOpenFileDialog.FileName));
             }
         }
-
+        private AgentType _currentAgentType = new AgentType();
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
             StringBuilder errors = new StringBuilder();
@@ -69,7 +72,7 @@ namespace Ганиев_Глазки
                 errors.AppendLine("Укажите телефон агента");
             else
             {
-                string ph = _currentAgent.Phone.Replace("(", "").Replace("-", "").Replace("+", "");
+                string ph = _currentAgent.Phone.Replace("(", "").Replace("-", "").Replace("+", "").Replace(" ", "").Replace(")", "");
                 if (((ph[1] == '9' || ph[1] == '4' || ph[1] == '8') && ph.Length != 11) || (ph[1] == '3' && ph.Length != 12))
                     errors.AppendLine("Укажите правильно телефон агента");
             }
@@ -80,6 +83,21 @@ namespace Ганиев_Глазки
             }
             if (_currentAgent.ID == 0)
                 ГаниевГлазкиSaveEntities.GetContext().Agent.Add(_currentAgent);
+
+
+            if (ComboType.SelectedIndex == 0)
+                _currentAgent.AgentTypeID = 1;
+            if (ComboType.SelectedIndex == 1)
+                _currentAgent.AgentTypeID = 2;
+            if (ComboType.SelectedIndex == 2)
+                _currentAgent.AgentTypeID = 3;
+            if (ComboType.SelectedIndex == 3)
+                _currentAgent.AgentTypeID = 4;
+            if (ComboType.SelectedIndex == 4)
+                _currentAgent.AgentTypeID = 5;
+            if (ComboType.SelectedIndex == 5)
+                _currentAgent.AgentTypeID = 6;
+
             try
             {
                 ГаниевГлазкиSaveEntities.GetContext().SaveChanges();
@@ -94,7 +112,30 @@ namespace Ганиев_Глазки
 
         private void DeleteBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            var currentAgent = (sender as Button).DataContext as Agent;
+            var currentDel = ГаниевГлазкиSaveEntities.GetContext().ProductSale.ToList();
+            currentDel = currentDel.Where(p=>p.AgentID == currentAgent.ID).ToList();
+            if(currentDel.Count != 0)
+            {
+                MessageBox.Show("Невозможно удалить агента. Имеются записи");
+            }
+            else
+            {
+                if (MessageBox.Show("Вы точно хотите выполнить удаление?", "Внимание!", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        ГаниевГлазкиSaveEntities.GetContext().Agent.Remove(currentAgent);
+                        ГаниевГлазкиSaveEntities.GetContext().SaveChanges();
+                        Manager.MainFrame.Navigate(new AgentPage());
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message.ToString());
+                    }
+                }
+            }
+            
         }
     }
 }

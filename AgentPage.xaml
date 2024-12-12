@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:Ганиев_Глазки"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="AgentPage">
+      Title="AgentPage" IsVisibleChanged="Page_IsVisibleChanged">
 
     <Grid>
         <Grid>
@@ -70,14 +70,14 @@
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Image Width="100" Grid.Column="0" Stretch="UniformToFill" HorizontalAlignment="Center" Grid.RowSpan="6" Margin="20">
+                            <Image Width="100" Grid.Column="0" Stretch="UniformToFill"  HorizontalAlignment="Center" Grid.RowSpan="6" Margin="20">
                                 <Image.Source>
                                     <Binding Path="Logo">
-                                        <Binding.FallbackValue>
+                                        <Binding.TargetNullValue>
                                             <ImageSource>
                                                 picture.png
                                             </ImageSource>
-                                        </Binding.FallbackValue>
+                                        </Binding.TargetNullValue>
                                     </Binding>
                                 </Image.Source>
                             </Image>

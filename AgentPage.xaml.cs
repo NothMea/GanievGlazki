@@ -264,5 +264,15 @@ namespace Ганиев_Глазки
         {
             ChangePage(0, Convert.ToInt32(PageListBox.SelectedItem.ToString())-1);
         }
+
+        private void Page_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (Visibility == Visibility.Visible)
+            {
+                ГаниевГлазкиSaveEntities.GetContext().ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
+                AgentListView.ItemsSource = ГаниевГлазкиSaveEntities.GetContext().Agent.ToList();
+                UpdateAgent();
+            }
+        }
     }
 }
