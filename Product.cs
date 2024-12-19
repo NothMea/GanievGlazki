@@ -31,7 +31,10 @@ namespace Ганиев_Глазки
         public decimal MinCostForAgent { get; set; }
         public string Description { get; set; }
         public string Image { get; set; }
-    
+        public override string ToString()
+        {
+            return Title;
+        }
         public virtual ProductType ProductType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductCostHistory> ProductCostHistory { get; set; }
@@ -39,5 +42,7 @@ namespace Ганиев_Глазки
         public virtual ICollection<ProductMaterial> ProductMaterial { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductSale> ProductSale { get; set; }
+      
     }
+
 }

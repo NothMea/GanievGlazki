@@ -11,7 +11,8 @@ namespace Ганиев_Глазки
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.IO.Packaging;
+
     public partial class ProductSale
     {
         public int ID { get; set; }
@@ -19,8 +20,24 @@ namespace Ганиев_Глазки
         public int ProductID { get; set; }
         public System.DateTime SaleDate { get; set; }
         public int ProductCount { get; set; }
-    
+
         public virtual Agent Agent { get; set; }
         public virtual Product Product { get; set; }
+
+        public decimal Stoimost 
+            {
+                get
+                {
+                    decimal p = Product.MinCostForAgent * ProductCount;
+                    return p;
+                }
+
+                
+            }
+        
+        public override string ToString()
+        {
+            return Product.Title + " - " + ProductCount + "шт. - " + SaleDate.ToString();
+        }
     }
 }

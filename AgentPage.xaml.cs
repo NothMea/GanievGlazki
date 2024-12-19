@@ -44,7 +44,7 @@ namespace Ганиев_Глазки
             string searchText = TBoxSearch.Text.ToLower();
 
 
-            currentAgent = currentAgent.Where(p => p.Title.ToLower().Contains(searchText) || p.Email.ToLower().Contains(searchText) || p.Phone.Replace("-", "").Replace(") ","").ToLower().Contains(searchText)
+            currentAgent = currentAgent.Where(p => p.Title.ToLower().Contains(searchText) || p.Email.ToLower().Contains(searchText) || p.Phone.Replace("-", "").Replace(") ", "").ToLower().Contains(searchText)
 ).ToList();
 
             if (ComboSort.SelectedIndex == 0)
@@ -95,7 +95,7 @@ namespace Ганиев_Глазки
                  ).ToList();
             }
 
-            if(ComboType.SelectedIndex == 1)
+            if (ComboType.SelectedIndex == 1)
             {
                 currentAgent = currentAgent.OrderBy(p => p.Title).ToList();
             }
@@ -104,10 +104,18 @@ namespace Ганиев_Глазки
             {
                 currentAgent = currentAgent.OrderByDescending(p => p.Title).ToList();
             }
+            if (ComboType.SelectedIndex == 3)
+            {
+                currentAgent = currentAgent.OrderBy(p => p.Discount).ToList();
+            }
 
+            if (ComboType.SelectedIndex == 4)
+            {
+                currentAgent = currentAgent.OrderByDescending(p => p.Discount).ToList();
+            }
             if (ComboType.SelectedIndex == 5)
-            { 
-                currentAgent = currentAgent.OrderBy(p => p.Priority).ToList(); 
+            {
+                currentAgent = currentAgent.OrderBy(p => p.Priority).ToList();
             }
             if (ComboType.SelectedIndex == 6)
             {
@@ -262,7 +270,7 @@ namespace Ганиев_Глазки
 
         private void PageListBox_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            ChangePage(0, Convert.ToInt32(PageListBox.SelectedItem.ToString())-1);
+            ChangePage(0, Convert.ToInt32(PageListBox.SelectedItem.ToString()) - 1);
         }
 
         private void Page_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -273,6 +281,50 @@ namespace Ганиев_Глазки
                 AgentListView.ItemsSource = ГаниевГлазкиSaveEntities.GetContext().Agent.ToList();
                 UpdateAgent();
             }
+        }
+
+        private void ChangerPriorityChanged_Click(object sender, RoutedEventArgs e)
+        {
+            int maxPriority = 0;
+            foreach (Agent agent in AgentListView.SelectedItems)
+            {
+                if (agent.Priority > maxPriority)
+                {
+                    maxPriority = agent.Priority;
+                }
+            }
+            SetWindow myWindow = new SetWindow(maxPriority);
+            myWindow.ShowDialog();
+            if (string.IsNullOrEmpty(myWindow.TBPriority.Text))
+            {
+                MessageBox.Show("Изменения не произошло");
+            }
+            else
+            {
+                int newPriority = Convert.ToInt32(myWindow.TBPriority.Text);
+                foreach (Agent agent in AgentListView.SelectedItems)
+                {
+                    agent.Priority = newPriority;
+                }
+                try
+                {
+                    ГаниевГлазкиSaveEntities.GetContext().SaveChanges();
+                    MessageBox.Show("Информация сохранена");
+                    UpdateAgent();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message.ToString());
+                }
+            }
+        }
+
+        private void AgentListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (AgentListView.SelectedItems.Count > 1)
+                ChangerPriorityChanged.Visibility = Visibility.Visible;
+            else
+                ChangerPriorityChanged.Visibility = Visibility.Hidden;
         }
     }
 }

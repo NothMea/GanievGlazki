@@ -36,6 +36,8 @@ namespace Ганиев_Глазки
             DataContext = _currentAgent;
 
             var _currentType = ГаниевГлазкиSaveEntities.GetContext().AgentType.ToList();
+            var _currentSales = ГаниевГлазкиSaveEntities.GetContext().ProductSale.ToList();
+            SellListView.ItemsSource = _currentSales.Where(p => p.AgentID == _currentAgent.ID).ToList();
             ComboType.ItemsSource = _currentType;
         }
 
@@ -136,6 +138,74 @@ namespace Ганиев_Глазки
                 }
             }
             
+        }
+
+        private void ChangeProductBtn_Click(object sender, RoutedEventArgs e)
+        {
+            SellWindow myWindow = new SellWindow();
+            myWindow.ShowDialog();
+            ProductSale newSale = new ProductSale();
+            newSale.SaleDate = Convert.ToDateTime(myWindow.SaleDate.Text);
+            var currentProducts = ГаниевГлазкиSaveEntities.GetContext().Product.ToList();
+            //var currentProduct = currentProducts.Where(p => p.Title == myWindow.ComboProducts.SelectedItem).ToList()[0];
+            newSale.ProductID = myWindow.ComboProducts.SelectedIndex + 1;
+            newSale.ProductCount = Convert.ToInt32(myWindow.TBSaleCount.Text.ToString());
+            newSale.AgentID = _currentAgent.ID;
+            ГаниевГлазкиSaveEntities.GetContext().ProductSale.Add(newSale);
+            try
+            {
+                ГаниевГлазкиSaveEntities.GetContext().SaveChanges();
+                MessageBox.Show("Информация сохранена");
+                var currentSales = ГаниевГлазкиSaveEntities.GetContext().ProductSale.ToList();
+                var currentSale = currentSales.Where(p => p.AgentID == _currentAgent.ID).ToList()[0];
+                //HakimovGlaskiSaveEntities.GetContext().ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
+                ГаниевГлазкиSaveEntities.GetContext().ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
+                SellListView.ItemsSource = ГаниевГлазкиSaveEntities.GetContext().ProductSale.ToList().Where(p => p.AgentID == _currentAgent.ID).ToList();
+                //Manager.MainFrame.GoBack();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
+            }
+        }
+
+        private void DeleteProductBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (SellListView.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Выбери продажу");
+                return;
+            }
+            if (SellListView.SelectedItems.Count == 1)
+            {
+                var currentSales = ГаниевГлазкиSaveEntities.GetContext().ProductSale.ToList();
+                var currentSale = currentSales.Where(p => p.AgentID == _currentAgent.ID).ToList()[SellListView.SelectedIndex];
+                ГаниевГлазкиSaveEntities.GetContext().ProductSale.Remove(currentSale);
+                ГаниевГлазкиSaveEntities.GetContext().SaveChanges();
+                MessageBox.Show("Продажа удалена");
+                ГаниевГлазкиSaveEntities.GetContext().ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
+                SellListView.ItemsSource = ГаниевГлазкиSaveEntities.GetContext().ProductSale.ToList().Where(p => p.AgentID == _currentAgent.ID).ToList();
+                return;
+            }
+            else
+            {
+                MessageBox.Show("Выбери 1 продажу");
+                return;
+            }
+        }
+
+        private void ComboType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void Page_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (Visibility == Visibility.Visible)
+            {
+                ГаниевГлазкиSaveEntities.GetContext().ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
+                SellListView.ItemsSource = ГаниевГлазкиSaveEntities.GetContext().ProductSale.ToList().Where(p => p.AgentID == _currentAgent.ID).ToList();
+            }
         }
     }
 }
